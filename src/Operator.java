@@ -79,7 +79,7 @@ public final class Operator {
             stmt.executeUpdate(sql);
             this.finger = finger;
             stmt.close();
-            return true;
+            return setAssistance();
         } catch (SQLException ex) {
             Logger.getLogger(Operator.class.getName()).log(Level.SEVERE, null, ex);
             return false;

@@ -4,13 +4,9 @@ import com.digitalpersona.uareu.Fid;
 import com.digitalpersona.uareu.Fmd;
 import com.digitalpersona.uareu.Reader;
 import com.digitalpersona.uareu.UareUException;
-import com.digitalpersona.uareu.UareUGlobal;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDialog;
-import javax.xml.bind.DatatypeConverter;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -23,7 +19,7 @@ import javax.xml.bind.DatatypeConverter;
  * @author juanko
  */
 public class WindowInterface extends javax.swing.JFrame {
-
+    private Boolean isEnrollment = true;
     public Reader reader;
     public Engine engine;
     public Reader.CaptureResult result;
@@ -46,10 +42,9 @@ public class WindowInterface extends javax.swing.JFrame {
         }
             
         initComponents();
-        if(operator.finger == null){
-            VerificarBtn.setEnabled(false);
-        }else{
-            EnrolarBtn.setEnabled(false);
+        if(operator.finger != null){
+            isEnrollment = false;
+            EnrolarBtn.setText("Verificar");
         }
     }
 
@@ -63,9 +58,11 @@ public class WindowInterface extends javax.swing.JFrame {
     private void initComponents() {
 
         EnrolarBtn = new javax.swing.JButton();
-        VerificarBtn = new javax.swing.JButton();
         SalirBtn = new javax.swing.JButton();
         imagePanel = new ImagePanel();
+        Dimension dm = new Dimension(150, 400);
+        imagePanel.setPreferredSize(dm);
+        imagePanel.setMaximumSize(dm);
         jScrollPane1 = new javax.swing.JScrollPane();
         message = new javax.swing.JTextArea();
 
@@ -75,13 +72,6 @@ public class WindowInterface extends javax.swing.JFrame {
         EnrolarBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 EnrolarBtnActionPerformed(evt);
-            }
-        });
-
-        VerificarBtn.setText("Verificar");
-        VerificarBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                VerificarBtnActionPerformed(evt);
             }
         });
 
@@ -106,7 +96,7 @@ public class WindowInterface extends javax.swing.JFrame {
         );
 
         message.setEditable(false);
-        message.setColumns(20);
+        message.setColumns(15);
         message.setRows(5);
         jScrollPane1.setViewportView(message);
 
@@ -121,7 +111,6 @@ public class WindowInterface extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(EnrolarBtn)
                         .addGap(139, 139, 139)
-                        .addComponent(VerificarBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 193, Short.MAX_VALUE)
                         .addComponent(SalirBtn))
                     .addComponent(imagePanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -137,7 +126,6 @@ public class WindowInterface extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(EnrolarBtn)
-                    .addComponent(VerificarBtn)
                     .addComponent(SalirBtn))
                 .addContainerGap())
         );
@@ -147,21 +135,17 @@ public class WindowInterface extends javax.swing.JFrame {
 
     private void EnrolarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EnrolarBtnActionPerformed
         EnrolarBtn.setEnabled(false);
-        Enrollment enrollment = new Enrollment(reader,message,imagePanel, this);
-        enrollment.start();
-        EnrolarBtn.setEnabled(false);
-        VerificarBtn.setEnabled(true);
-    }//GEN-LAST:event_EnrolarBtnActionPerformed
-
-    private void VerificarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VerificarBtnActionPerformed
-        VerificarBtn.setEnabled(false);
-        Verification verification = new Verification(reader,message,imagePanel, this);
-        if(verification.start()){
+        if(isEnrollment){
+            Enrollment enrollment = new Enrollment(reader,message,imagePanel, this);
+            enrollment.start();
             System.exit(0);
+        }else{
+            Verification verification = new Verification(reader,message,imagePanel, this);
+            if(verification.start()){
+                System.exit(0);
+            }
         }
-        //enrollFingerprint();
-        VerificarBtn.setEnabled(true);
-    }//GEN-LAST:event_VerificarBtnActionPerformed
+    }//GEN-LAST:event_EnrolarBtnActionPerformed
 
     private void SalirBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SalirBtnActionPerformed
         operator.closeConnection();
@@ -172,7 +156,6 @@ public class WindowInterface extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton EnrolarBtn;
     private javax.swing.JButton SalirBtn;
-    private javax.swing.JButton VerificarBtn;
     private ImagePanel imagePanel;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea message;

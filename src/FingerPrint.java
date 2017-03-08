@@ -45,10 +45,6 @@ public class FingerPrint {
             JOptionPane.showMessageDialog(null, "Error al obtener la coleccion");
             return;
         }
-        
-        //Boolean verifier = Verifier.Run(m_reader);
-        //System.out.println("Verifier");
-        //System.out.println(verifier);
     }
     
 }

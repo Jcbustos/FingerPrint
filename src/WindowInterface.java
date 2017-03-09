@@ -3,8 +3,11 @@ import com.digitalpersona.uareu.Engine;
 import com.digitalpersona.uareu.Fid;
 import com.digitalpersona.uareu.Fmd;
 import com.digitalpersona.uareu.Reader;
+import com.digitalpersona.uareu.ReaderCollection;
 import com.digitalpersona.uareu.UareUException;
+import com.digitalpersona.uareu.UareUGlobal;
 import java.awt.Dimension;
+import static java.lang.Thread.sleep;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,26 +28,46 @@ public class WindowInterface extends javax.swing.JFrame {
     public Reader.CaptureResult result;
     public Fmd fmd;
     public Operator operator;
+    private ReaderCollection readerCollection;
     
     /**
      * Creates new form Interface
-     * @param reader
      * @param operator
      */
-    public WindowInterface(Reader reader, Operator operator) {
-        this.reader = reader;
+    public WindowInterface(Operator operator) {
         this.operator = operator;
         this.setTitle("Operador "+operator.name+", rut: "+operator.rut);
+        initComponents();
+        EnrolarBtn.setEnabled(false);
+        this.setVisible(true);
         try {
-            this.reader.Open(Reader.Priority.COOPERATIVE);
+            this.readerCollection = UareUGlobal.GetReaderCollection();
+            System.out.println("Preparando el dispositivo");
+            message.append("Preparando el dispositivo\n");
+            int tries = 0;
+            while(readerCollection.isEmpty() && tries <= 15){
+                readerCollection = UareUGlobal.GetReaderCollection();
+                readerCollection.GetReaders();
+                tries++;
+                sleep(1000);
+            }
+            if(readerCollection.isEmpty()){
+                message.append("No se encuentra el dispositivo");
+            }else{
+                if(operator.finger != null){
+                    isEnrollment = false;
+                    EnrolarBtn.setText("Verificar");
+                }
+                EnrolarBtn.setEnabled(true);
+                message.append("Dispositivo preparado\n\n");
+                System.out.println("El dispositivo esta listo");
+                reader = readerCollection.get(0);
+                this.reader.Open(Reader.Priority.COOPERATIVE);
+            }
         } catch (UareUException ex) {
             Logger.getLogger(WindowInterface.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            
-        initComponents();
-        if(operator.finger != null){
-            isEnrollment = false;
-            EnrolarBtn.setText("Verificar");
+        } catch (InterruptedException ex) {
+            Logger.getLogger(WindowInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -143,6 +166,8 @@ public class WindowInterface extends javax.swing.JFrame {
             Verification verification = new Verification(reader,message,imagePanel, this);
             if(verification.start()){
                 System.exit(0);
+            }else{
+                EnrolarBtn.setEnabled(true);
             }
         }
     }//GEN-LAST:event_EnrolarBtnActionPerformed

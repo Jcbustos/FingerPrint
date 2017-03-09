@@ -93,10 +93,8 @@ public final class Operator {
             stmt = con.createStatement();
             String sql;
             sql = "UPDATE asistencias set asiste = 'true' WHERE operador_id = '"+this.id+"' and jornada_id = '"+this.jornada+"'";
-            System.out.println(sql);
             int result = stmt.executeUpdate(sql);
             stmt.close();
-            System.out.println(result);
             return result == 1;
         } catch (SQLException ex) {
             Logger.getLogger(Operator.class.getName()).log(Level.SEVERE, null, ex);

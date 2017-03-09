@@ -17,33 +17,17 @@ import static javax.xml.bind.DatatypeConverter.parseInt;
  */
 public class FingerPrint {
 
-    private static ReaderCollection readerCollection;
-    private static Reader reader;
     private static Operator operator;
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        try {
-            if(args[0] != null){
-                operator = new Operator(parseInt(args[0]), parseInt(args[1]));
-                readerCollection = UareUGlobal.GetReaderCollection();
-                System.out.println("Preparando el dispositivo");
-                while(readerCollection.isEmpty()){
-                    readerCollection = UareUGlobal.GetReaderCollection();
-                    readerCollection.GetReaders();
-                }
-                System.out.println("El dispositivo esta listo");
-                reader = readerCollection.get(0);
-                WindowInterface interfaz = new WindowInterface(reader,operator);
-                interfaz.setVisible(true);
-            }else{
-                System.out.println("ID de operado no encontrado");
-            }
-        } catch (UareUException ex) {
-            // TODO Auto-generated catch block
-            JOptionPane.showMessageDialog(null, "Error al obtener la coleccion");
-            return;
+        if(args[0] != null){
+            operator = new Operator(parseInt(args[0]), parseInt(args[1]));
+            WindowInterface interfaz = new WindowInterface(operator);
+        }else{
+            System.out.println("ID de operado no encontrado");
+            System.exit(-1);
         }
     }
     

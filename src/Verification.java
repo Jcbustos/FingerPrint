@@ -18,8 +18,6 @@ public class Verification {
     private Engine engine;
     private Reader.CaptureResult result;
     private Fmd fmd, oldEnrolledFmd;
-    private String oldBase64, newBase64;
-    
     private final Reader reader;
     private final JTextArea message;
     private final ImagePanel imagePanel;
@@ -88,9 +86,6 @@ public class Verification {
             fmd = engine.CreateFmd(result.image, Fmd.Format.ANSI_378_2004);
         } catch (UareUException ex) {
             Logger.getLogger(Verification.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        this.newBase64 = DatatypeConverter.printBase64Binary(this.fmd.getData());
-        
+        }    
       }
 }

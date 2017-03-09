@@ -1,6 +1,5 @@
 
 import com.digitalpersona.uareu.Engine;
-import com.digitalpersona.uareu.Fid;
 import com.digitalpersona.uareu.Fmd;
 import com.digitalpersona.uareu.Reader;
 import com.digitalpersona.uareu.ReaderCollection;
@@ -64,9 +63,7 @@ public class WindowInterface extends javax.swing.JFrame {
                 reader = readerCollection.get(0);
                 this.reader.Open(Reader.Priority.COOPERATIVE);
             }
-        } catch (UareUException ex) {
-            Logger.getLogger(WindowInterface.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
+        } catch (UareUException | InterruptedException ex) {
             Logger.getLogger(WindowInterface.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
